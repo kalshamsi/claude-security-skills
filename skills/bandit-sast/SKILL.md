@@ -1,0 +1,181 @@
+---
+name: bandit-sast
+description: "Python SAST scanning via Bandit. Use when asked to scan Python code for security issues, run Bandit, perform Python SAST, or find Python security vulnerabilities."
+---
+
+# Bandit SAST
+
+This skill performs static application security testing (SAST) for Python projects using Bandit, identifying common security anti-patterns such as use of dangerous functions, hardcoded credentials, insecure cryptography, and injection risks, then mapping findings to CWE and OWASP Top 10:2021 standards.
+
+## When to Use
+
+- When the user asks to "scan Python code for security issues" or "run Bandit"
+- When the user mentions "Python SAST" or "security scan Python"
+- When reviewing Python code for vulnerabilities before deployment
+- When a pull request contains changes to `.py` files and a security check is requested
+- When the user asks to find insecure patterns like `eval`, `exec`, `pickle`, or hardcoded passwords in Python
+
+## When NOT to Use
+
+- When scanning non-Python code (use `semgrep` or language-specific tools instead)
+- When the user is asking about Python code style or linting (use `pylint` or `flake8`)
+- When the user wants runtime/dynamic analysis (use DAST tools like `nuclei`)
+- When the `security-review` skill already covers the request at a general level
+
+## Prerequisites
+
+### Tool Installed (Preferred)
+
+```bash
+# Detection
+which bandit || python -m bandit --version
+
+# Installation (if not found)
+pip install bandit
+```
+
+Minimum version: Bandit 1.7+. No API key required.
+
+### Tool Not Installed (Fallback)
+
+> **Note:** This is a limited review. Install Bandit for comprehensive scanning with full test coverage.
+
+When Bandit is not available, perform these top-10 manual Python security checks:
+
+1. **eval() / exec() usage** — Search for `eval(` and `exec(` calls, especially with user-controlled input
+2. **subprocess with shell=True** — Search for `subprocess.call(`, `subprocess.Popen(`, `subprocess.run(` with `shell=True` and string interpolation
+3. **Hardcoded passwords** — Search for variables named `password`, `passwd`, `secret`, `api_key` assigned to string literals
+4. **pickle deserialization** — Search for `pickle.loads(`, `pickle.load(`, `cPickle.load(` on untrusted data
+5. **Weak hashing** — Search for `hashlib.md5(`, `hashlib.sha1(` used for password hashing or security-sensitive operations
+6. **assert in production** — Search for `assert` statements used for input validation (stripped in optimized mode)
+7. **Wildcard imports** — Search for `from module import *` which can mask injected names
+8. **try-except-pass** — Search for bare `except:` or `except Exception:` followed by `pass`, which silences security errors
+9. **Insecure temp files** — Search for `tempfile.mktemp(` (use `tempfile.mkstemp()` or `NamedTemporaryFile` instead)
+10. **yaml.load() without SafeLoader** — Search for `yaml.load(` without `Loader=yaml.SafeLoader` or `yaml.safe_load(`
+
+## Workflow
+
+1. **Detect Python project** — Confirm Python files exist by checking for `*.py` files, `requirements.txt`, `setup.py`, `pyproject.toml`, or `Pipfile`.
+2. **Check for Bandit** — Run `which bandit || python -m bandit --version` to determine if Bandit is installed.
+3. **If Bandit is installed:**
+   a. Run `bandit -r . -f json -q` to scan all Python files recursively with JSON output.
+   b. Parse the JSON output — each result contains `test_id`, `test_name`, `issue_severity`, `issue_confidence`, `issue_text`, `filename`, and `line_number`.
+   c. Map each `test_id` to its CWE using the Reference Tables below.
+   d. Map each CWE to its OWASP Top 10:2021 category.
+4. **If Bandit is NOT installed:**
+   a. Offer to install via `pip install bandit`.
+   b. If the user declines, run the 10 manual fallback checks listed in Prerequisites.
+   c. Include the disclaimer: "This is a limited review. Install Bandit for comprehensive scanning."
+5. **Compile findings** — Deduplicate results and sort by severity: Critical > High > Medium > Low.
+6. **Generate report** — Present findings using the Findings Format below.
+7. **Summarize** — State total findings, breakdown by severity, and top 3 remediation priorities.
+
+## Findings Format
+
+Each finding should include:
+
+| Field | Description |
+|-------|-------------|
+| Severity | Critical / High / Medium / Low |
+| CWE | CWE-XXX identifier |
+| OWASP | A01-A10 category (OWASP Top 10:2021) |
+| Location | file:line |
+| Issue | Description of the vulnerability |
+| Remediation | How to fix it |
+
+### Example Finding
+
+| Field | Value |
+|-------|-------|
+| Severity | High |
+| CWE | CWE-78 |
+| OWASP | A03:2021 - Injection |
+| Location | app/utils.py:27 |
+| Issue | `subprocess.call()` with `shell=True` and f-string user input enables OS command injection |
+| Remediation | Use `subprocess.run()` with a list of arguments and `shell=False` (default) |
+
+## Reference Tables
+
+### Bandit Test ID to CWE Mapping
+
+| Bandit Test ID | Test Name | CWE | OWASP | Default Severity |
+|----------------|-----------|-----|-------|------------------|
+| B101 | assert_used | CWE-703 | A07:2021 - Security Misconfiguration | Low |
+| B102 | exec_used | CWE-78 | A03:2021 - Injection | Medium |
+| B301 | pickle | CWE-502 | A08:2021 - Software and Data Integrity Failures | Medium |
+| B303 | md5 / sha1 | CWE-328 | A02:2021 - Cryptographic Failures | Medium |
+| B306 | mktemp_q | CWE-377 | A01:2021 - Broken Access Control | Medium |
+| B307 | eval | CWE-78 | A03:2021 - Injection | Medium |
+| B501 | request_with_no_cert_validation | CWE-295 | A07:2021 - Security Misconfiguration | High |
+| B602 | subprocess_popen_with_shell_equals_true | CWE-78 | A03:2021 - Injection | High |
+| B603 | subprocess_without_shell_equals_true | CWE-78 | A03:2021 - Injection | Low |
+| B608 | hardcoded_sql_expressions | CWE-89 | A03:2021 - Injection | Medium |
+| B105 | hardcoded_password_string | CWE-259 | A07:2021 - Security Misconfiguration | Low |
+| B106 | hardcoded_password_funcarg | CWE-259 | A07:2021 - Security Misconfiguration | Low |
+| B403 | import_pickle | CWE-502 | A08:2021 - Software and Data Integrity Failures | Low |
+| B506 | yaml_load | CWE-502 | A08:2021 - Software and Data Integrity Failures | Medium |
+
+### OWASP Top 10:2021 Quick Reference
+
+| Category | Description | Common CWEs |
+|----------|-------------|-------------|
+| A01:2021 | Broken Access Control | CWE-377 |
+| A02:2021 | Cryptographic Failures | CWE-328 |
+| A03:2021 | Injection | CWE-78, CWE-89 |
+| A07:2021 | Security Misconfiguration | CWE-259, CWE-295, CWE-703 |
+| A08:2021 | Software and Data Integrity Failures | CWE-502 |
+
+## Example Usage
+
+### With Bandit Installed
+
+**User prompt:**
+> "Run a Bandit scan on this Python project"
+
+**Expected output (abbreviated):**
+
+```text
+## Bandit SAST Scan Results
+
+Scanned 14 files in src/
+
+### Findings (4 total: 0 Critical, 2 High, 1 Medium, 1 Low)
+
+| # | Severity | CWE | OWASP | Location | Issue |
+|---|----------|-----|-------|----------|-------|
+| 1 | High | CWE-78 | A03 | src/deploy.py:31 | subprocess.Popen() with shell=True and user input (B602) |
+| 2 | High | CWE-78 | A03 | src/utils.py:12 | eval() called with user-supplied string (B307) |
+| 3 | Medium | CWE-502 | A08 | src/cache.py:45 | pickle.loads() on data from network socket (B301) |
+| 4 | Low | CWE-703 | A07 | src/config.py:8 | assert used for input validation (B101) |
+
+### Recommendations
+1. Replace subprocess shell calls with list-based arguments (Finding #1)
+2. Replace eval() with ast.literal_eval() or a safe parser (Finding #2)
+3. Use json.loads() instead of pickle for untrusted data (Finding #3)
+```
+
+### Without Bandit (Fallback Mode)
+
+**User prompt:**
+> "Check this Python code for security issues"
+
+**Expected output (abbreviated):**
+
+```text
+## Python Security Review (Manual Fallback)
+
+> Note: This is a limited review. Install Bandit for comprehensive scanning.
+
+Scanned 8 .py files
+
+### Findings (2 total: 0 Critical, 1 High, 1 Medium)
+
+| # | Severity | CWE | OWASP | Location | Issue |
+|---|----------|-----|-------|----------|-------|
+| 1 | High | CWE-78 | A03 | scripts/run.py:19 | subprocess.call() with shell=True and string formatting |
+| 2 | Medium | CWE-259 | A07 | config/settings.py:5 | Hardcoded password: DB_PASSWORD = "admin123" |
+
+### Recommendations
+1. Use subprocess.run() with a list of arguments instead of shell=True (Finding #1)
+2. Move credentials to environment variables or a secrets manager (Finding #2)
+```
