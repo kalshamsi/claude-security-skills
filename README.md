@@ -2,7 +2,7 @@
 
 Production-ready security skills for Claude Code and compatible AI coding agents
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![Skills: 4](https://img.shields.io/badge/Skills-4-green.svg) ![Validation: Passing](https://img.shields.io/badge/Validation-Passing-brightgreen.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![Skills: 7](https://img.shields.io/badge/Skills-7-green.svg) ![Validation: Passing](https://img.shields.io/badge/Validation-Passing-brightgreen.svg)
 
 ## What This Is
 
@@ -10,7 +10,7 @@ This is a curated collection of security-focused SKILL.md files that teach Claud
 
 Each skill is a standalone markdown file — no npm package, no runtime dependency, no API keys required for pure-analysis skills. Skills are designed to work out of the box: just install and prompt.
 
-The collection covers four security patterns: CLI wrapper (Bandit SAST), pure code analysis (crypto audit), test code generation (security tests), and config generation (DevSecOps pipeline). All skills map findings to CWE and OWASP Top 10:2021 standards for consistent, actionable reporting.
+The collection covers four security patterns: CLI wrapper (Bandit SAST, Socket SCA, Docker Scout), pure code analysis (crypto audit, security headers), test code generation (security tests), and config generation (DevSecOps pipeline). All skills map findings to CWE and OWASP Top 10:2021 standards for consistent, actionable reporting.
 
 ## Skill Catalog
 
@@ -20,6 +20,9 @@ The collection covers four security patterns: CLI wrapper (Bandit SAST), pure co
 | crypto-audit | Cryptographic vulnerability detection via code analysis across 5 languages | Pure Analysis | None |
 | security-test-generator | Generate executable security test suites for web applications | Code Generator | None |
 | devsecops-pipeline | Generate GitHub Actions security CI/CD pipelines | Config Generator | None |
+| socket-sca | Supply chain security analysis via Socket.dev CLI | CLI Wrapper | Socket CLI (optional) |
+| docker-scout-scanner | Container vulnerability scanning via Docker Scout | CLI Wrapper | Docker Scout (optional) |
+| security-headers-audit | HTTP security header configuration audit across frameworks | Pure Analysis | None |
 
 ## Installation
 
@@ -54,6 +57,9 @@ After installation, use natural language prompts in Claude Code:
 - **"Audit the cryptographic implementations in this codebase"** — triggers crypto-audit to check for 12 crypto anti-patterns across 5 languages
 - **"Generate security tests for my Express API"** — triggers security-test-generator to produce jest+supertest test suites targeting OWASP Top 10 vulnerabilities
 - **"Generate a security pipeline for this project"** — triggers devsecops-pipeline to produce a GitHub Actions workflow with SAST, SCA, secrets detection, container scanning, and DAST stages
+- **"Scan my dependencies for supply chain risks"** — triggers socket-sca to check npm/pip manifests for typosquatting, malware, install scripts, and known-vulnerable packages
+- **"Scan this Docker image for vulnerabilities"** — triggers docker-scout-scanner to run Docker Scout CVE scanning or fall back to Dockerfile security analysis
+- **"Audit the security headers in my server config"** — triggers security-headers-audit to check CSP, CORS, HSTS, and 10+ security header configurations
 
 Skills auto-detect project type and adapt their output accordingly.
 
@@ -93,7 +99,10 @@ claude-security-skills/
 │   ├── bandit-sast/        # Python SAST via Bandit
 │   ├── crypto-audit/       # Cryptographic vulnerability detection
 │   ├── security-test-generator/  # Security test suite generation
-│   └── devsecops-pipeline/ # GitHub Actions security pipeline generation
+│   ├── devsecops-pipeline/ # GitHub Actions security pipeline generation
+│   ├── socket-sca/        # Supply chain analysis via Socket.dev
+│   ├── docker-scout-scanner/ # Container scanning via Docker Scout
+│   └── security-headers-audit/ # HTTP security header audit
 ├── tests/
 │   ├── test-skills.sh      # Skill validation suite
 │   └── fixtures/           # Test fixture files
