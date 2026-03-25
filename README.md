@@ -2,7 +2,7 @@
 
 Production-ready security skills for Claude Code and compatible AI coding agents
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![Skills: 7](https://img.shields.io/badge/Skills-7-green.svg) ![Validation: Passing](https://img.shields.io/badge/Validation-Passing-brightgreen.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![Skills: 10](https://img.shields.io/badge/Skills-10-green.svg) ![Validation: Passing](https://img.shields.io/badge/Validation-Passing-brightgreen.svg)
 
 ## What This Is
 
@@ -10,7 +10,7 @@ This is a curated collection of security-focused SKILL.md files that teach Claud
 
 Each skill is a standalone markdown file — no npm package, no runtime dependency, no API keys required for pure-analysis skills. Skills are designed to work out of the box: just install and prompt.
 
-The collection covers four security patterns: CLI wrapper (Bandit SAST, Socket SCA, Docker Scout), pure code analysis (crypto audit, security headers), test code generation (security tests), and config generation (DevSecOps pipeline). All skills map findings to CWE and OWASP Top 10:2021 standards for consistent, actionable reporting.
+The collection covers four security patterns: CLI wrapper (Bandit SAST, Socket SCA, Docker Scout), pure code analysis (crypto audit, security headers, API security, mobile security, PCI-DSS compliance), test code generation (security tests), and config generation (DevSecOps pipeline). All skills map findings to CWE and OWASP standards for consistent, actionable reporting.
 
 ## Skill Catalog
 
@@ -23,6 +23,9 @@ The collection covers four security patterns: CLI wrapper (Bandit SAST, Socket S
 | socket-sca | Supply chain security analysis via Socket.dev CLI | CLI Wrapper | Socket CLI (optional) |
 | docker-scout-scanner | Container vulnerability scanning via Docker Scout | CLI Wrapper | Docker Scout (optional) |
 | security-headers-audit | HTTP security header configuration audit across frameworks | Pure Analysis | None |
+| api-security-tester | API security audit for OWASP API Security Top 10:2023 across REST and GraphQL | Pure Analysis | None |
+| mobile-security | Mobile app security audit for OWASP Mobile Top 10:2024 across Android, iOS, React Native, Flutter | Pure Analysis | None |
+| pci-dss-audit | PCI-DSS v4.0 compliance audit for payment-related application code | Pure Analysis | None |
 
 ## Installation
 
@@ -60,6 +63,9 @@ After installation, use natural language prompts in Claude Code:
 - **"Scan my dependencies for supply chain risks"** — triggers socket-sca to check npm/pip manifests for typosquatting, malware, install scripts, and known-vulnerable packages
 - **"Scan this Docker image for vulnerabilities"** — triggers docker-scout-scanner to run Docker Scout CVE scanning or fall back to Dockerfile security analysis
 - **"Audit the security headers in my server config"** — triggers security-headers-audit to check CSP, CORS, HSTS, and 10+ security header configurations
+- **"Audit this API for security issues"** — triggers api-security-tester to check for BOLA, broken auth, SSRF, and all OWASP API Top 10:2023 categories
+- **"Check this mobile app for security vulnerabilities"** — triggers mobile-security to audit Android/iOS code for OWASP Mobile Top 10:2024 issues
+- **"Audit this codebase for PCI-DSS compliance"** — triggers pci-dss-audit to check payment code for PCI-DSS v4.0 violations
 
 Skills auto-detect project type and adapt their output accordingly.
 
@@ -102,7 +108,10 @@ claude-security-skills/
 │   ├── devsecops-pipeline/ # GitHub Actions security pipeline generation
 │   ├── socket-sca/        # Supply chain analysis via Socket.dev
 │   ├── docker-scout-scanner/ # Container scanning via Docker Scout
-│   └── security-headers-audit/ # HTTP security header audit
+│   ├── security-headers-audit/ # HTTP security header audit
+│   ├── api-security-tester/  # API security audit (OWASP API Top 10)
+│   ├── mobile-security/      # Mobile app security audit (OWASP Mobile Top 10)
+│   └── pci-dss-audit/        # PCI-DSS v4.0 compliance audit
 ├── tests/
 │   ├── test-skills.sh      # Skill validation suite
 │   └── fixtures/           # Test fixture files
