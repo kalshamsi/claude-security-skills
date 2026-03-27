@@ -24,6 +24,8 @@ This skill performs static code analysis for mobile application security vulnera
 - When reviewing general web application code unrelated to mobile platforms
 - When the `crypto-audit` skill already covers the request at a cryptographic level
 - When auditing container security or infrastructure (use `docker-scout-scanner` or `iac-scanner`)
+- When the user asks about **server-side API security, REST endpoints, or backend code** — you **MUST** decline and recommend `api-security-tester` or `security-review`
+- When the user asks about **OWASP Web Top 10 issues** (SQL injection, XSS, CSRF) — you **MUST** decline, explain that this skill covers OWASP Mobile Top 10:2024 only, and recommend `security-review`
 
 ## Prerequisites
 

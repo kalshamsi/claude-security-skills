@@ -1,6 +1,6 @@
 ---
 name: bandit-sast
-description: "Python SAST scanning via Bandit. Use when asked to scan Python code for security issues, run Bandit, perform Python SAST, or find Python security vulnerabilities."
+description: "Python SAST scanning via Bandit. Use when asked to scan Python code for security issues, find Python vulnerabilities, run Bandit, perform Python SAST, audit Python security, or review Python code for security bugs."
 ---
 
 # Bandit SAST
@@ -17,10 +17,12 @@ This skill performs static application security testing (SAST) for Python projec
 
 ## When NOT to Use
 
-- When scanning non-Python code (use `semgrep` or language-specific tools instead)
-- When the user is asking about Python code style or linting (use `pylint` or `flake8`)
-- When the user wants runtime/dynamic analysis (use DAST tools like `nuclei`)
-- When the `security-review` skill already covers the request at a general level
+- When scanning non-Python code (JavaScript, Go, Java, etc.) — you **MUST** decline and recommend `semgrep-rule-creator` or the language-specific tool instead
+- When the user is asking about Python code style, formatting, or linting — you **MUST** decline and recommend `pylint` or `flake8`
+- When the user wants runtime or dynamic analysis of a running application — you **MUST** decline and recommend DAST tools like `dast-nuclei`
+- When the user wants to generate security test code — you **MUST** decline and recommend `security-test-generator`
+- When the user wants a CI/CD security pipeline — you **MUST** decline and recommend `devsecops-pipeline`
+- When the `security-review` skill already covers the request at a general level and no Python-specific SAST depth is needed
 
 ## Prerequisites
 
@@ -55,6 +57,8 @@ When Bandit is not available, perform these top-10 manual Python security checks
 
 ## Workflow
 
+> **MANDATORY FIRST ACTION:** You **MUST** run `which bandit || bandit --version` before any analysis. Do NOT skip this step. Do NOT claim Bandit results without confirming the tool is installed and producing real output.
+
 1. **Detect Python project** — Confirm Python files exist by checking for `*.py` files, `requirements.txt`, `setup.py`, `pyproject.toml`, or `Pipfile`.
 2. **Check for Bandit** — Run `which bandit || python -m bandit --version` to determine if Bandit is installed.
 3. **If Bandit is installed:**
@@ -71,6 +75,8 @@ When Bandit is not available, perform these top-10 manual Python security checks
 7. **Summarize** — State total findings, breakdown by severity, and top 3 remediation priorities.
 
 ## Findings Format
+
+> **MANDATORY FORMAT:** You **MUST** include Severity, CWE, and OWASP Top 10:2021 mapping on **every** finding. Use the exact table format shown below — do not use freeform text.
 
 Each finding should include:
 

@@ -23,6 +23,8 @@ This skill generates executable security test suites targeting common web applic
 - When the user is asking about security concepts without wanting test code generated
 - When the user wants CI/CD pipeline configuration (use `devsecops-pipeline`)
 - When the project has no web endpoints or API routes to test
+- When the user wants a **CI/CD pipeline** — you **MUST** decline and recommend `devsecops-pipeline`
+- When the user wants a **security scan or vulnerability report** (not test code) — you **MUST** decline and recommend `bandit-sast`, `security-review`, or the appropriate scanning skill
 
 ## Prerequisites
 

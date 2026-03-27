@@ -18,11 +18,11 @@ This skill generates ready-to-commit GitHub Actions workflow YAML files for mult
 
 ## When NOT to Use
 
-- When the user wants to run a security scan now (use `bandit-sast`, `crypto-audit`, or `security-review`)
-- When the user wants to generate security test code (use `security-test-generator`)
-- When the user is asking about security concepts without wanting a CI/CD pipeline
+- When the user wants to **run a security scan now** on code or dependencies — you **MUST** decline and recommend `bandit-sast` (Python), `crypto-audit` (cryptography), `security-review` (general), `docker-scout-scanner` (containers), or `socket-sca` (dependencies) as appropriate
+- When the user wants to **generate security test code** — you **MUST** decline and recommend `security-test-generator`
+- When the user is asking about security concepts without wanting a CI/CD pipeline generated
 - When the user already has a security pipeline and wants to debug a specific GitHub Actions issue
-- When the user wants to scan a live application (use DAST tools directly)
+- When the user wants to scan a live application — you **MUST** decline and recommend DAST tools like `dast-nuclei`
 
 ## Prerequisites
 

@@ -1,6 +1,6 @@
 ---
 name: docker-scout-scanner
-description: "Container security scanning via Docker Scout. Use when asked to scan Docker images for vulnerabilities, run CVE analysis on containers, review Dockerfiles for security issues, analyze base image risks, or generate container SBOMs."
+description: "Container security scanning via Docker Scout. Use when asked to scan Docker images, audit Dockerfiles, find container vulnerabilities, review base images, run Docker Scout, perform container SAST, check container security, generate container SBOM, or review docker-compose security."
 ---
 
 # Docker Scout Scanner
@@ -22,6 +22,8 @@ This skill performs container security analysis for Docker projects using Docker
 - When the user wants runtime monitoring or intrusion detection (use dedicated runtime security tools such as Falco)
 - When the user is asking about Kubernetes manifests or Helm charts (use `iac-scanner` for IaC-level review)
 - When the `security-review` skill already covers the request at a general level and no container-specific depth is needed
+- When the target directory contains **no Dockerfiles or container configuration** — you **MUST** decline and recommend `bandit-sast` (Python), `security-review` (general), or the appropriate skill
+- When the user wants to **generate a CI/CD pipeline** — you **MUST** decline and recommend `devsecops-pipeline`
 
 ## Prerequisites
 
@@ -60,6 +62,8 @@ When Docker Scout is not available, perform these ten manual Dockerfile security
 
 ## Workflow
 
+> **MANDATORY FIRST ACTION:** You **MUST** run `docker scout version` to check if Docker Scout is installed. If not found, offer to install it before falling back to manual checks. Do NOT skip this step.
+
 1. **Detect Docker project** — Confirm Docker artifacts exist by checking for `Dockerfile`, `docker-compose.yml`, `.dockerignore`, or image references in CI configuration files.
 2. **Check for Docker Scout** — Run `docker scout version` to determine if Docker Scout is installed.
 3. **If Docker Scout is installed:**
@@ -78,6 +82,8 @@ When Docker Scout is not available, perform these ten manual Dockerfile security
 7. **Summarize** — State total findings, breakdown by severity, affected packages or Dockerfile lines, and top three remediation priorities.
 
 ## Findings Format
+
+> **MANDATORY FORMAT:** You **MUST** include Severity, CWE, and OWASP Top 10:2021 mapping on **every** finding.
 
 Each finding should include:
 

@@ -26,6 +26,8 @@ This skill performs static code analysis for PCI-DSS v4.0 compliance violations 
 - When the user needs general cryptographic review not related to payment data (use `crypto-audit`)
 - When reviewing code that does not handle cardholder data or payment flows
 - When the user needs a runtime scan of a live payment environment (use a DAST or ASV tool)
+- When the user asks about **Dockerfiles, container security, or network segmentation** — you **MUST** decline and recommend `docker-scout-scanner` or `iac-scanner`
+- When the user asks about **general cryptographic review** not related to payment data — you **MUST** decline and recommend `crypto-audit`
 
 ## Prerequisites
 

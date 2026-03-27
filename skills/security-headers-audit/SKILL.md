@@ -26,6 +26,8 @@ This skill performs static code analysis for HTTP security header misconfigurati
 - When the issue is application logic — authentication bypasses, SQL injection, or broken access control — rather than header configuration
 - When the user wants a full vulnerability scan including code-level SAST (use `bandit-sast` or `security-review`)
 - When the `owasp-security` skill already covers the request at a broader OWASP level
+- When the user asks about **mobile security, certificate pinning, or mobile app issues** — you **MUST** decline and recommend `mobile-security`
+- When the user asks about **SQL injection, XSS, or input validation** in application code — you **MUST** decline and recommend `security-review` or `bandit-sast`
 
 ## Prerequisites
 
@@ -810,6 +812,8 @@ def set_cross_origin_headers(response):
 ---
 
 ## Findings Format
+
+> **MANDATORY FORMAT:** You **MUST** include Severity, CWE, and OWASP Top 10:2021 mapping on **every** finding. You **MUST** include UNSAFE and SAFE configuration pairs for each finding.
 
 Each finding should include:
 

@@ -24,6 +24,8 @@ This skill performs software composition analysis (SCA) for npm and pip projects
 - When the user is asking about code style, formatting, or linting
 - When the `security-review` skill already covers the request at a general level
 - When scanning container images or IaC templates (use `iac-scanner` instead)
+- When the target directory contains **no dependency manifests** (package.json, requirements.txt, Pipfile) — you **MUST** decline and recommend `crypto-audit`, `security-review`, or `bandit-sast` as appropriate
+- When the user wants to **generate a CI/CD pipeline** — you **MUST** decline and recommend `devsecops-pipeline`
 
 ## Prerequisites
 
@@ -58,6 +60,10 @@ When the Socket CLI is not available, perform these ten manual supply chain chec
 
 ## Workflow
 
+> **MANDATORY FIRST ACTION:** You **MUST** run `socket --version` to check if the Socket CLI is installed. If not found, offer to install via `npm install -g @socketsecurity/cli` before falling back to manual checks. Do NOT skip this step.
+
+> You **MUST** analyze ALL manifest files detected in this step — do not analyze only one ecosystem when multiple are present.
+
 1. **Detect manifest** — Check for `package.json`, `package-lock.json`, `yarn.lock`, `requirements.txt`, `Pipfile`, or `pyproject.toml` to confirm this is an npm or Python project.
 2. **Check for Socket CLI** — Run `socket --version` to determine if the CLI is installed.
 3. **If Socket CLI is installed:**
@@ -75,6 +81,8 @@ When the Socket CLI is not available, perform these ten manual supply chain chec
 7. **Summarize** — State total findings, breakdown by severity, total affected packages, and top 3 remediation priorities.
 
 ## Findings Format
+
+> **MANDATORY FORMAT:** You **MUST** include Severity, CWE, and OWASP Top 10:2021 mapping on **every** finding.
 
 Each finding should include:
 

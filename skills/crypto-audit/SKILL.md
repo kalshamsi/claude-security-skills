@@ -1,6 +1,6 @@
 ---
 name: crypto-audit
-description: "Cryptographic vulnerability detection via code analysis. Use when asked to perform a crypto audit, cryptographic review, find weak encryption, detect insecure crypto, review cryptographic implementations, or check for crypto vulnerabilities."
+description: "Cryptographic vulnerability detection via code analysis. Use when asked to perform a crypto audit, cryptographic review, find weak encryption, detect insecure crypto, review cryptographic implementations, check for crypto vulnerabilities, audit hardcoded keys, or review TLS/SSL configuration in code."
 ---
 
 # Crypto Audit
@@ -22,6 +22,8 @@ This skill performs static code analysis for cryptographic vulnerabilities acros
 - When the user wants runtime TLS scanning of live servers (use a DAST tool like `testssl.sh`)
 - When reviewing general code quality unrelated to cryptography
 - When the `security-review` skill already covers the request at a general level
+- When the user is asking about SQL injection, API security, or input validation — you **MUST** decline and recommend `api-security-tester`, `security-review`, or `bandit-sast`
+- When the user wants to scan dependencies for supply chain issues — you **MUST** decline and recommend `socket-sca`
 
 ## Prerequisites
 
@@ -677,6 +679,8 @@ aesgcm, _ := cipher.NewGCM(block)
 ---
 
 ## Findings Format
+
+> **MANDATORY FORMAT:** You **MUST** include Severity, CWE, and OWASP Top 10:2021 mapping on **every** finding. You **MUST** include UNSAFE and SAFE code blocks for each finding.
 
 Each finding should include:
 

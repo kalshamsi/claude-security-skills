@@ -24,6 +24,8 @@ This skill performs static code analysis of REST and GraphQL API implementations
 - When reviewing general code quality unrelated to API security
 - When the user is asking about infrastructure-level security (use `iac-scanner`)
 - When the user wants container security scanning (use `docker-scout-scanner`)
+- When the user asks about **TLS/cipher configuration** — you **MUST** decline and recommend `crypto-audit` or `security-headers-audit`
+- When the user asks about **XSS, CSRF, or OWASP Web Top 10 issues** (not OWASP API Top 10) — you **MUST** decline, explain that this skill covers OWASP API Top 10:2023 only, and recommend `security-review`
 
 ## Prerequisites
 
@@ -863,6 +865,8 @@ async def partner_webhook(request: Request):
 ---
 
 ## Findings Format
+
+> **MANDATORY FORMAT:** You **MUST** include Severity, CWE, and OWASP API Top 10:2023 mapping on **every** finding. You **MUST** include UNSAFE and SAFE code pairs for each finding.
 
 Each finding should include:
 
