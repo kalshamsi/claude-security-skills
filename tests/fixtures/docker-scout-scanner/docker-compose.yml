@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DB_PASSWORD: inventory_db_pass_2023
+        API_SECRET: HARDCODED_STRIPE_KEY_DO_NOT_USE
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    volumes:
+      - /etc:/host-etc:ro
+      - ./data:/app/data
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=postgres
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/worker/data
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - DB_HOST=postgres
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: inventory
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:

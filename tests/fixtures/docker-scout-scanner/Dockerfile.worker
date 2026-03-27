@@ -1,0 +1,27 @@
+# Background worker for processing inventory jobs
+FROM python:3.8-slim
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    vim \
+    gcc \
+    libpq-dev \
+    && apt-get clean
+
+RUN pip install --no-cache-dir \
+    celery==5.2.7 \
+    redis==4.3.4 \
+    psycopg2==2.9.5 \
+    requests==2.28.1
+
+WORKDIR /worker
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Run as default user (root)
+CMD ["python", "-u", "worker.py"]
