@@ -2,7 +2,7 @@
 
 Production-ready security skills for Claude Code and compatible AI coding agents
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg) ![Skills: 10](https://img.shields.io/badge/Skills-10-green.svg) ![Validation: Passing](https://img.shields.io/badge/Validation-Passing-brightgreen.svg)
+![Version: 1.3.0](https://img.shields.io/badge/Version-1.3.0-blue.svg) ![Skills: 10](https://img.shields.io/badge/Skills-10-green.svg) ![Validation: Passing](https://img.shields.io/badge/Validation-Passing-brightgreen.svg) ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ## What This Is
 
@@ -96,26 +96,47 @@ bash tests/test-skills.sh
 
 To contribute: copy the template, fill in every section, run validation, and submit a PR.
 
+## Behavioral Testing
+
+All 10 skills are evaluated across 5 dimensions using 100 test prompts (10 skills x 5 dimensions x 2 prompts each). Each dimension is scored 0-3:
+
+| Dimension | What It Measures |
+|-----------|-----------------|
+| Triggering | Does the skill activate on relevant prompts? |
+| Workflow | Does it follow the prescribed analysis steps? |
+| Output Quality | Are findings structured with CWE/OWASP mapping? |
+| Boundary | Does it decline out-of-scope requests? |
+| Fallback | Does it handle missing CLI tools gracefully? |
+
+**Pass criteria:** average >= 2.0 across all dimensions AND no dimension scores 0.
+
+See the full results in [docs/test-report.md](docs/test-report.md), the scoring rubric in [docs/scoring-rubric.md](docs/scoring-rubric.md), and all 100 test prompts in [docs/test-prompts.md](docs/test-prompts.md).
+
 ## Project Structure
 
 ```text
 claude-security-skills/
 ├── skills/
-│   ├── _template/          # Skill template for contributors
-│   ├── bandit-sast/        # Python SAST via Bandit
-│   ├── crypto-audit/       # Cryptographic vulnerability detection
-│   ├── security-test-generator/  # Security test suite generation
-│   ├── devsecops-pipeline/ # GitHub Actions security pipeline generation
-│   ├── socket-sca/        # Supply chain analysis via Socket.dev
-│   ├── docker-scout-scanner/ # Container scanning via Docker Scout
+│   ├── _template/              # Skill template for contributors
+│   ├── bandit-sast/            # Python SAST via Bandit
+│   ├── crypto-audit/           # Cryptographic vulnerability detection
+│   ├── security-test-generator/ # Security test suite generation
+│   ├── devsecops-pipeline/     # GitHub Actions security pipeline generation
+│   ├── socket-sca/             # Supply chain analysis via Socket.dev
+│   ├── docker-scout-scanner/   # Container scanning via Docker Scout
 │   ├── security-headers-audit/ # HTTP security header audit
-│   ├── api-security-tester/  # API security audit (OWASP API Top 10)
-│   ├── mobile-security/      # Mobile app security audit (OWASP Mobile Top 10)
-│   └── pci-dss-audit/        # PCI-DSS v4.0 compliance audit
+│   ├── api-security-tester/    # API security audit (OWASP API Top 10)
+│   ├── mobile-security/        # Mobile app security audit (OWASP Mobile Top 10)
+│   └── pci-dss-audit/          # PCI-DSS v4.0 compliance audit
 ├── tests/
-│   ├── test-skills.sh      # Skill validation suite
-│   └── fixtures/           # Test fixture files
-└── LICENSE                 # MIT License
+│   ├── test-skills.sh          # Structural validation suite
+│   └── fixtures/               # Planted-vulnerability fixtures for behavioral testing
+├── docs/
+│   ├── test-report.md          # Behavioral test scorecard and analysis
+│   ├── test-prompts.md         # All 100 test prompts
+│   └── scoring-rubric.md       # Scoring criteria (0-3 per dimension)
+├── CHANGELOG.md                # Release history
+└── LICENSE                     # MIT License
 ```
 
 ## License
