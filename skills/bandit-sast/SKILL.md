@@ -1,6 +1,6 @@
 ---
 name: bandit-sast
-description: "Python SAST scanning via Bandit. Use when asked to scan Python code for security issues, find Python vulnerabilities, run Bandit, perform Python SAST, audit Python security, or review Python code for security bugs."
+description: "Use when scanning Python code for security vulnerabilities, running Bandit, performing Python SAST, auditing Python security bugs, or reviewing Python source for injection, weak crypto, or insecure deserialization."
 ---
 
 # Bandit SAST
