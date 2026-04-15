@@ -1,6 +1,6 @@
 ---
 name: api-security-tester
-description: "API security auditing for REST and GraphQL endpoints. Use when asked to audit API security, check API endpoints, review API authentication, find BOLA vulnerabilities, detect broken authorization, audit REST API, audit GraphQL API, check OWASP API Top 10, review API rate limiting, or find API security issues."
+description: "Use when auditing REST or GraphQL API endpoints, checking API authentication and authorization, hunting BOLA or broken access control, reviewing rate limiting, or covering the OWASP API Security Top 10."
 ---
 
 # API Security Tester
