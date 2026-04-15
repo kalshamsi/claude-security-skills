@@ -2,7 +2,7 @@
 
 Production-ready security skills for Claude Code and compatible AI coding agents
 
-![Version: 1.3.0](https://img.shields.io/badge/Version-1.3.0-blue.svg) ![Skills: 10](https://img.shields.io/badge/Skills-10-green.svg) ![Validation: Passing](https://img.shields.io/badge/Validation-Passing-brightgreen.svg) ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+![Version: 1.4.0](https://img.shields.io/badge/Version-1.4.0-blue.svg) ![Skills: 10](https://img.shields.io/badge/Skills-10-green.svg) [![CI](https://github.com/kalshamsi/claude-security-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/kalshamsi/claude-security-skills/actions/workflows/ci.yml) ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ## What This Is
 
