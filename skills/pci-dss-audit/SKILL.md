@@ -1,6 +1,6 @@
 ---
 name: pci-dss-audit
-description: "PCI-DSS v4.0 compliance audit via code analysis. Use when asked to perform a PCI audit, PCI-DSS review, check payment card security, audit cardholder data handling, review PCI compliance, check credit card data protection, or detect PCI-DSS violations in application code."
+description: "Use when auditing code for PCI-DSS v4.0 compliance, reviewing cardholder data handling, checking credit-card storage and transmission, hunting PAN logging, or answering \"is this code PCI-compliant?\"."
 ---
 
 # PCI-DSS Audit
