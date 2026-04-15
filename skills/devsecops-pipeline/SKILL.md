@@ -1,6 +1,6 @@
 ---
 name: devsecops-pipeline
-description: "Generate GitHub Actions security CI/CD pipelines. Use when asked to generate security pipeline, DevSecOps workflow, CI/CD security, GitHub Actions security, create security workflow, add security scanning to CI, or set up automated security checks."
+description: "Use when setting up security scanning in CI/CD, adding SAST/SCA/secrets/container scanning to a GitHub Actions workflow, wiring SARIF uploads, or building a DevSecOps pipeline for a new or existing repo."
 ---
 
 # DevSecOps Pipeline Generator
@@ -18,10 +18,12 @@ This skill generates ready-to-commit GitHub Actions workflow YAML files for mult
 
 ## When NOT to Use
 
+**DO NOT activate if the request is not about setting up a CI/CD security pipeline, even if the word "security" appears.** The presence of security keywords alone is not a trigger — the request must be about wiring security into a GitHub Actions workflow or equivalent CI/CD system.
+
 - When the user wants to **run a security scan now** on code or dependencies — you **MUST** decline and recommend `bandit-sast` (Python), `crypto-audit` (cryptography), `security-review` (general), `docker-scout-scanner` (containers), or `socket-sca` (dependencies) as appropriate
 - When the user wants to **generate security test code** — you **MUST** decline and recommend `security-test-generator`
-- When the user is asking about security concepts without wanting a CI/CD pipeline generated
-- When the user already has a security pipeline and wants to debug a specific GitHub Actions issue
+- When the user is asking about security concepts without wanting a CI/CD pipeline generated — **Decline** and answer the conceptual question directly without generating a workflow
+- When the user already has a security pipeline and wants to debug a specific GitHub Actions issue — **Decline** pipeline generation and help debug the existing workflow instead
 - When the user wants to scan a live application — you **MUST** decline and recommend DAST tools like `dast-nuclei`
 
 ## Prerequisites
