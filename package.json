@@ -1,22 +1,23 @@
 {
   "name": "claude-security-skills",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Production-ready security skills for Claude Code and compatible AI coding agents",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs",
-    "test": "tests"
-  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "bash tests/test-skills.sh && bash tests/test-links.sh && bash tests/test-fixtures.sh && bash tests/test-frontmatter.sh"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "express": "^5.2.1",
-    "jest": "^30.3.0",
-    "sqlite3": "^5.1.7",
-    "supertest": "^7.2.2"
+  "keywords": [
+    "claude-code",
+    "security",
+    "sast",
+    "owasp",
+    "cwe",
+    "skills",
+    "ai-agent"
+  ],
+  "author": "Khalfan AlShamsi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kalshamsi/claude-security-skills.git"
   }
 }
