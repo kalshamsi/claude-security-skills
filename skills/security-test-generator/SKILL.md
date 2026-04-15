@@ -1,6 +1,6 @@
 ---
 name: security-test-generator
-description: "Generate executable security test suites for web applications. Use when asked to generate security tests, security test suite, write vulnerability tests, pentest tests, create security regression tests, or produce runnable security test code."
+description: "Use when writing security tests for a web application, building a vulnerability regression suite, creating pentest-style automated tests, generating runnable injection/XSS/auth test code, or adding security coverage to an existing test suite."
 ---
 
 # Security Test Generator
@@ -18,11 +18,12 @@ This skill generates executable security test suites targeting common web applic
 
 ## When NOT to Use
 
-- When the user wants a static analysis scan (use `bandit-sast` or `security-review`)
-- When the user wants a cryptographic audit (use `crypto-audit`)
-- When the user is asking about security concepts without wanting test code generated
-- When the user wants CI/CD pipeline configuration (use `devsecops-pipeline`)
-- When the project has no web endpoints or API routes to test
+**DO NOT activate if the request is not about producing runnable security test code, even if the word "security" appears.** The presence of security keywords alone is not a trigger — the request must be about writing executable test cases that probe a web application or API for vulnerabilities.
+
+- When the user wants a static analysis scan — **Decline** and recommend `bandit-sast` or `security-review`
+- When the user wants a cryptographic audit — **Decline** and recommend `crypto-audit`
+- When the user is asking about security concepts without wanting test code generated — **Decline** and answer the conceptual question directly without generating test files
+- When the project has no web endpoints or API routes to test — **Decline** and explain that this skill targets HTTP request/response flows
 - When the user wants a **CI/CD pipeline** — you **MUST** decline and recommend `devsecops-pipeline`
 - When the user wants a **security scan or vulnerability report** (not test code) — you **MUST** decline and recommend `bandit-sast`, `security-review`, or the appropriate scanning skill
 
