@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Structural validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: test-skills.sh
+        run: bash tests/test-skills.sh
+
+      - name: test-links.sh
+        run: bash tests/test-links.sh
+
+      - name: test-fixtures.sh
+        run: bash tests/test-fixtures.sh
+
+      - name: test-frontmatter.sh
+        run: bash tests/test-frontmatter.sh
