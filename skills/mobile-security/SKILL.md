@@ -1,6 +1,6 @@
 ---
 name: mobile-security
-description: "Mobile application security audit via code analysis per OWASP Mobile Top 10:2024. Use when asked to audit mobile security, review mobile app code, check Android/iOS security, find mobile vulnerabilities, audit React Native or Flutter security, review mobile authentication, or check mobile data storage."
+description: "Use when auditing an Android or iOS application for security issues, reviewing React Native or Flutter code, checking mobile authentication or insecure data storage, or covering the OWASP Mobile Top 10:2024."
 ---
 
 # Mobile Security Audit
