@@ -3,7 +3,7 @@
   "version": "1.4.0",
   "description": "Production-ready security skills for Claude Code and compatible AI coding agents",
   "scripts": {
-    "test": "bash tests/test-skills.sh && bash tests/test-links.sh && bash tests/test-fixtures.sh && bash tests/test-frontmatter.sh"
+    "test": "bash tests/test-skills.sh && bash tests/test-links.sh && bash tests/test-fixtures.sh && bash tests/test-frontmatter.sh && bash tests/test-prompts-frozen.sh"
   },
   "keywords": [
     "claude-code",

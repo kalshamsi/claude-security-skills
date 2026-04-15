@@ -28,3 +28,6 @@ jobs:
 
       - name: test-frontmatter.sh
         run: bash tests/test-frontmatter.sh
+
+      - name: test-prompts-frozen.sh
+        run: bash tests/test-prompts-frozen.sh
