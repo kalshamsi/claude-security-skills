@@ -1,6 +1,6 @@
 ---
 name: security-headers-audit
-description: "HTTP security header configuration audit via code analysis. Use when asked to audit security headers, review CSP policy, check CORS configuration, review HSTS settings, check X-Frame-Options, audit Permissions-Policy, review header middleware, or perform web security hardening review."
+description: "Use when reviewing HTTP security headers, checking a Content-Security-Policy, auditing CORS or HSTS configuration, evaluating X-Frame-Options or Permissions-Policy, inspecting header middleware, or hardening a web application's response headers."
 ---
 
 # Security Headers Audit
