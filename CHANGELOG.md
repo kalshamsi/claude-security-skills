@@ -2,6 +2,31 @@
 
 All notable changes to claude-security-skills are documented here.
 
+## [1.4.0] — 2026-04-15
+
+### Added
+- GitHub Actions CI workflow running structural validation on every PR and push to main
+- tests/test-links.sh — cross-skill link-integrity check for When-NOT-to-Use references
+- tests/test-fixtures.sh — fixture-README completeness check
+- tests/test-frontmatter.sh — frontmatter shape check (size, name, "Use when")
+- docs/v1.4.0-cso-audit.md — CSO audit of all 10 skill descriptions; fixes deferred to v1.5.0
+- docs/test-methodology.md — pinned-model measurement protocol for the v1.5.0 behavioral re-run
+
+### Changed
+- package.json now has real metadata (author, license, keywords, repository) and a working test script
+- README badges now include a live CI status badge instead of a static "Validation: Passing" shield
+
+### Removed
+- package-lock.json (was 258KB, generated from devDependencies that are no longer present)
+- devDependencies (express, jest, supertest, sqlite3) — unused by the repo itself. If you cloned and ran `npm install` expecting these, they were never part of the project's runtime or test surface.
+- tests/fixtures/insecure-mobile/ — deleted as orphan
+- node_modules/ and .pytest_cache/ — no longer tracked; added to .gitignore
+
+### Deferred to v1.5.0
+- Re-running the 100 behavioral prompts against the v1.3.0 SKILL.md fixes
+- Applying the CSO audit's proposed description rewrites
+- Adding behavioral-stats badges (boundary avg, pass/total) once real v1.5.0 data lands
+
 ## [1.3.0] — 2026-03-28
 
 ### Changed
