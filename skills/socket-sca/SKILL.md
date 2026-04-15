@@ -1,6 +1,6 @@
 ---
 name: socket-sca
-description: "Supply chain analysis via Socket.dev CLI. Use when asked to scan dependencies for supply chain risks, run Socket SCA, audit npm/pip packages, detect typosquatting, or find malicious dependencies."
+description: "Use when scanning project dependencies for supply-chain risk, running Socket SCA on npm/pip/pypi packages, hunting typosquats or malicious packages, or auditing third-party dependency health before a release."
 ---
 
 # Socket SCA
