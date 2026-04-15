@@ -1,6 +1,6 @@
 ---
 name: crypto-audit
-description: "Cryptographic vulnerability detection via code analysis. Use when asked to perform a crypto audit, cryptographic review, find weak encryption, detect insecure crypto, review cryptographic implementations, check for crypto vulnerabilities, audit hardcoded keys, or review TLS/SSL configuration in code."
+description: "Use when reviewing code for weak encryption, hardcoded cryptographic keys, insecure TLS/SSL configuration, broken hashing, bad randomness, or any cryptographic implementation concern — regardless of language."
 ---
 
 # Crypto Audit
