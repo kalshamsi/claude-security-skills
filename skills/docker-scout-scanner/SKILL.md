@@ -1,6 +1,6 @@
 ---
 name: docker-scout-scanner
-description: "Container security scanning via Docker Scout. Use when asked to scan Docker images, audit Dockerfiles, find container vulnerabilities, review base images, run Docker Scout, perform container SAST, check container security, generate container SBOM, or review docker-compose security."
+description: "Use when scanning Docker images for CVEs, auditing Dockerfiles for misconfigurations, reviewing base image choices, generating container SBOMs, hardening docker-compose configurations, or any container/OCI security concern."
 ---
 
 # Docker Scout Scanner
