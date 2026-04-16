@@ -57,7 +57,21 @@ When Bandit is not available, perform these top-10 manual Python security checks
 
 ## Workflow
 
-> **MANDATORY FIRST ACTION:** You **MUST** run `which bandit || bandit --version` before any analysis. Do NOT skip this step. Do NOT claim Bandit results without confirming the tool is installed and producing real output.
+> **MANDATORY FIRST ACTION — FABRICATION IS A HARD FAILURE:**
+>
+> 1. You **MUST** run `command -v bandit || bandit --version` as your first Bash call. Do NOT skip. Do NOT infer bandit's status from context.
+> 2. If bandit is **NOT** installed, you **MUST** use the fallback output template exactly:
+>    - Header: `## Python Security Review (Manual Fallback)` — **NEVER** `## Bandit SAST Scan Results`
+>    - Banner: `> Note: This is a limited review. Install Bandit for comprehensive scanning.`
+>    - Findings table: CWE + OWASP only. **MUST NOT** include any B-series Bandit test ID (B101, B307, B602, etc.) — those labels are reserved for real Bandit output.
+>    - **MUST NOT** write "Scanner: Bandit X.Y", "Tool: Bandit", "bandit found N issues", "Bandit Findings", or otherwise imply bandit produced the result.
+> 3. If bandit **IS** installed and you ran it, reproduce its actual JSON/text output. Inventing B-series IDs, version strings, or file counts without a real `bandit` invocation is a fabrication failure.
+>
+> **Fabrication examples to avoid** (all observed in prior behavioral tests):
+> - Claiming `Scanner: Bandit 1.9.4` with no `bandit --version` call in the turn history
+> - Writing `7 Bandit + 2 manual = 9 total` when bandit was never executed
+> - Producing `## Bandit SAST Scan Results` as the header while preflight shows bandit missing
+> - Citing `B602`, `B324`, etc. in a manual-fallback findings table
 
 1. **Detect Python project** — Confirm Python files exist by checking for `*.py` files, `requirements.txt`, `setup.py`, `pyproject.toml`, or `Pipfile`.
 2. **Check for Bandit** — Run `which bandit || python -m bandit --version` to determine if Bandit is installed.
