@@ -57,21 +57,18 @@ When Bandit is not available, perform these top-10 manual Python security checks
 
 ## Workflow
 
-> **MANDATORY FIRST ACTION — FABRICATION IS A HARD FAILURE:**
+> **MANDATORY FIRST ACTION — Verify the tool before reporting its output.**
 >
-> 1. You **MUST** run `command -v bandit || bandit --version` as your first Bash call. Do NOT skip. Do NOT infer bandit's status from context.
-> 2. If bandit is **NOT** installed, you **MUST** use the fallback output template exactly:
->    - Header: `## Python Security Review (Manual Fallback)` — **NEVER** `## Bandit SAST Scan Results`
->    - Banner: `> Note: This is a limited review. Install Bandit for comprehensive scanning.`
->    - Findings table: CWE + OWASP only. **MUST NOT** include any B-series Bandit test ID (B101, B307, B602, etc.) — those labels are reserved for real Bandit output.
->    - **MUST NOT** write "Scanner: Bandit X.Y", "Tool: Bandit", "bandit found N issues", "Bandit Findings", or otherwise imply bandit produced the result.
-> 3. If bandit **IS** installed and you ran it, reproduce its actual JSON/text output. Inventing B-series IDs, version strings, or file counts without a real `bandit` invocation is a fabrication failure.
+> Your first Bash call must be `command -v bandit || bandit --version`. Branch on the result:
 >
-> **Fabrication examples to avoid** (all observed in prior behavioral tests):
-> - Claiming `Scanner: Bandit 1.9.4` with no `bandit --version` call in the turn history
-> - Writing `7 Bandit + 2 manual = 9 total` when bandit was never executed
-> - Producing `## Bandit SAST Scan Results` as the header while preflight shows bandit missing
-> - Citing `B602`, `B324`, etc. in a manual-fallback findings table
+> - **Bandit is available** — proceed with the installed-tool workflow (step 3a below). The report may use `## Bandit SAST Scan Results`, cite B-series test IDs (B101, B602, etc.), and reference the Bandit version, because real Bandit output backs all of it.
+> - **Bandit is not available** — proceed with the fallback workflow (step 3b below). The report must:
+>   - Use header `## Python Security Review (Manual Fallback)`.
+>   - Open with: `> Note: This is a limited review. Install Bandit for comprehensive scanning.`
+>   - Cite CWE + OWASP only. B-series test IDs are Bandit's internal taxonomy — using them without running Bandit misattributes the findings to a tool that did not produce them.
+>   - Not claim a scanner, version, or file count that the turn history doesn't show.
+>
+> The contract is simple: **every artifact in the report must trace back to something the skill actually did in this turn.** If you did not run `bandit`, don't present Bandit results. The user is relying on the report matching what was actually scanned.
 
 1. **Detect Python project** — Confirm Python files exist by checking for `*.py` files, `requirements.txt`, `setup.py`, `pyproject.toml`, or `Pipfile`.
 2. **Check for Bandit** — Run `which bandit || python -m bandit --version` to determine if Bandit is installed.
