@@ -9,6 +9,7 @@ CLAUDE.md
 skills-lock.json
 plans/
 docs/test-results-v*-WIP.md
+docs/test-runs/
 .DS_Store
 *.swp
 *.swo
