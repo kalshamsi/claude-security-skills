@@ -1,6 +1,6 @@
 {
   "name": "claude-security-skills",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Production-ready security skills for Claude Code and compatible AI coding agents",
   "scripts": {
     "test": "bash tests/test-skills.sh && bash tests/test-links.sh && bash tests/test-fixtures.sh && bash tests/test-frontmatter.sh && bash tests/test-prompts-frozen.sh"
