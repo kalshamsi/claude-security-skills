@@ -62,7 +62,18 @@ When Docker Scout is not available, perform these ten manual Dockerfile security
 
 ## Workflow
 
-> **MANDATORY FIRST ACTION:** You **MUST** run `docker scout version` to check if Docker Scout is installed. If not found, offer to install it before falling back to manual checks. Do NOT skip this step.
+> **MANDATORY FIRST ACTION — Verify the tool before reporting its output.**
+>
+> Your first Bash call must be `docker scout version`. Note that `docker` being on the PATH is not sufficient — Docker Scout is a separate plugin (bundled with Docker Desktop 4.17+, absent in CLI-only environments). Branch on the result:
+>
+> - **Docker Scout is available** — proceed with the installed-tool workflow (step 3a below). The report may use `## Docker Scout CVE Scan Results`, list CVE IDs, cite the Scout version, and include per-layer package/vulnerability counts, because real scanner output backs all of it.
+> - **Docker Scout is not available** — proceed with the fallback workflow (step 3b below). The report must:
+>   - Use header `## Dockerfile Security Review (Manual Fallback)`.
+>   - Open with: `> Note: This is a limited review. Install Docker Scout for comprehensive CVE scanning.`
+>   - Focus on Dockerfile static checks only. CVE IDs and per-layer counts require a real scan — without one, they would be invented data presented as measured data.
+>   - Not claim a scanner, version, or image-layer metric that the turn history doesn't show.
+>
+> The contract is simple: **every artifact in the report must trace back to something the skill actually did in this turn.** If you did not run `docker scout cves`, don't present Scout results. The user is relying on the report matching what was actually scanned.
 
 1. **Detect Docker project** — Confirm Docker artifacts exist by checking for `Dockerfile`, `docker-compose.yml`, `.dockerignore`, or image references in CI configuration files.
 2. **Check for Docker Scout** — Run `docker scout version` to determine if Docker Scout is installed.
