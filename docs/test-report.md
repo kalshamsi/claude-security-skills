@@ -1,10 +1,103 @@
 # Behavioral Test Report — Claude Security Skills
 
-This report tracks behavioral test scores for all 10 security skills across 5 evaluation dimensions. Scores are integers 0–3 per dimension. Pass threshold: average >= 2.0 AND no dimension scores 0. Populate this report during test execution phases.
+This report tracks behavioral test scores for all 10 security skills across 5 evaluation dimensions. Scores are 0–3 per dimension; pass threshold is average ≥ 2.0 AND no dimension scores 0. Suite-wide gates (per `docs/test-methodology.md`): Triggering ≥ 2.5, Boundary ≥ 2.0, zero fabricated-tool findings. This report covers two measurement passes: **v1.5.0** (current) and **v1.3.0** (baseline, preserved for comparison).
 
 ---
 
-## Scorecard Matrix
+## v1.5.0 Scorecard Matrix
+
+**Model:** `claude-opus-4-6[1m]` · **Date:** 2026-04-16 · **Prompts:** 100 frozen (SHA-256 `43de3eeef49cd8dd32a8b70befcee3e8f52782f4e8a0bb858bf8a04382a5e4f9`)
+**Scorer:** AI-assisted (`claude -p --bare`, pinned prompt in `scripts/score-transcripts.py`) with operator ratification — 95/100 AI scores approved as-is, 5 overridden via BR fingerprint re-attribution rule per `docs/test-methodology.md`. Ratified record: `docs/test-runs/v1.5.0/ai-scores-ratified.jsonl`.
+
+| Skill                   | Triggering | Workflow | Output | Boundary | Fallback | Avg  | Pass? |
+| :---------------------- | :--------: | :------: | :----: | :------: | :------: | :--: | :---: |
+| docker-scout-scanner    |    3.0     |   3.0    |  3.0   |   3.0    |   2.5    | 2.90 | PASS  |
+| security-headers-audit  |    3.0     |   3.0    |  3.0   |   2.0    |   3.0    | 2.80 | PASS  |
+| bandit-sast             |    3.0     |   2.0    |  3.0   |   3.0    |   2.5    | 2.70 | PASS  |
+| crypto-audit            |    3.0     |   3.0    |  3.0   |   1.5    |   3.0    | 2.70 | PASS  |
+| socket-sca              |    3.0     |   3.0    |  2.5   |   3.0    |   2.0    | 2.70 | PASS  |
+| pci-dss-audit           |    3.0     |   3.0    |  2.5   |   2.0    |   3.0    | 2.70 | PASS  |
+| mobile-security         |    3.0     |   3.0    |  3.0   |   1.5    |   3.0    | 2.70 | PASS  |
+| api-security-tester     |    3.0     |   2.5    |  2.0   |   1.5    |   3.0    | 2.40 | PASS  |
+| security-test-generator |    3.0     |   2.0    |  2.0   |   2.0    |   2.5    | 2.30 | PASS  |
+| devsecops-pipeline      |    3.0     |   2.0    |  1.0   |   2.0    |   2.5    | 2.10 | PASS  |
+
+---
+
+## v1.5.0 Dimension Averages
+
+| Dimension  | Average Across All 10 Skills | Sum                                    |
+| :--------- | :--------------------------: | :------------------------------------- |
+| Triggering |             3.00             | (3.0×10) / 10                          |
+| Workflow   |             2.65             | (2.0+3.0+2.0+2.0+3.0+3.0+3.0+2.5+3.0+3.0) / 10 |
+| Output     |             2.50             | (3.0+3.0+2.0+1.0+3.0+3.0+2.5+2.0+2.5+3.0) / 10 |
+| Boundary   |             2.15             | (3.0+1.5+2.0+2.0+3.0+2.0+3.0+1.5+2.0+1.5) / 10 |
+| Fallback   |             2.70             | (2.5+3.0+2.5+2.5+2.5+3.0+2.0+3.0+3.0+3.0) / 10 |
+
+---
+
+## v1.5.0 Summary Statistics
+
+- **Total pass count:** 10/10
+- **Total fail count:** 0/10
+- **Best skill:** docker-scout-scanner (2.90)
+- **Worst skill (still passing):** devsecops-pipeline (2.10)
+- **Best dimension:** Triggering (3.00 — every skill scored max)
+- **Worst dimension:** Boundary (2.15 — meets gate but remains the weakest)
+
+### Release Gates
+
+| Gate                             | Requirement | v1.5.0 Result        | Status |
+| :------------------------------- | :---------- | :------------------- | :----: |
+| All 10 skills pass               | avg ≥ 2.0 AND no zeros | 10/10        | ✅     |
+| Triggering suite-wide average    | ≥ 2.5       | 3.00                 | ✅     |
+| Boundary suite-wide average      | ≥ 2.0       | 2.15                 | ✅     |
+| Zero fabricated-tool findings    | = 0         | 0                    | ✅     |
+
+**All 4 release gates met. v1.5.0 is release-ready.**
+
+### Methodology Notes
+
+- **AI-assisted scoring.** Each of 100 transcripts was scored by `claude -p --bare` with a pinned prompt (`scripts/score-transcripts.py`). Operator ratified the priority queue (fabrication flags, zeros, close-to-gate, low-confidence). Spot-check of high-confidence AI scores showed consistent agreement.
+- **BR fingerprint re-attribution (5 overrides).** The behavioral harness runs `claude -p` without skill isolation, so for Boundary tests the response may come from a correct *sibling* skill rather than the labeled target. A subagent re-attributed 8 BR zeros by matching response format against each skill's SKILL.md output template; 7 reflected the target staying out of the way (sibling fired correctly), 1 (pci-dss-audit BR-1) was a genuine target failure and drove a REFACTOR. See `docs/test-runs/v1.5.0/br-re-attribution.jsonl` and `docs/test-methodology.md` §"BR scoring: fingerprint attribution rule".
+- **REFACTOR iterations applied.** Three skills required narrow-set REFACTOR + re-run:
+  - `bandit-sast` — tightened the missing-tool ladder; output now distinguishes real Bandit results (with B-series IDs) from manual-fallback findings (CWE/OWASP only).
+  - `docker-scout-scanner` — strengthened the `docker scout version` precheck with an explicit `docker ≠ docker scout plugin` distinction; preflight script updated to detect the plugin.
+  - `pci-dss-audit` — added a payment-evidence precondition; skill now declines generic crypto code and redirects to `crypto-audit`.
+- **Preflight methodology correction.** The original preflight captured tool availability as a pre-run snapshot but missed that `docker scout` is a plugin (not a standalone binary) and that `bandit` was installed after the initial run. The preflight script now includes a plugin-aware check; historical "fabrication" flags for legitimate Scout/Bandit output were cleared by re-running the affected prompts with corrected preflight data.
+
+---
+
+## v1.3.0 → v1.5.0 Delta
+
+| Dimension  | v1.3.0 | v1.5.0 | Delta |
+| :--------- | :----: | :----: | :---: |
+| Triggering |  2.0   |  3.00  | +1.00 |
+| Workflow   |  2.9   |  2.65  | −0.25 |
+| Output     |  2.5   |  2.50  |  0.00 |
+| Boundary   |  1.3   |  2.15  | +0.85 |
+| Fallback   |  2.6   |  2.70  | +0.10 |
+
+### Per-Skill Delta
+
+| Skill                   | v1.3.0 | v1.5.0 | Delta  | v1.3.0 Verdict | v1.5.0 Verdict |
+| :---------------------- | :----: | :----: | :----: | :------------: | :------------: |
+| bandit-sast             |  1.8   |  2.70  | +0.90  | FAIL           | PASS           |
+| docker-scout-scanner    |  2.0   |  2.90  | +0.90  | PASS           | PASS           |
+| crypto-audit            |  2.0   |  2.70  | +0.70  | PASS           | PASS           |
+| socket-sca              |  2.0   |  2.70  | +0.70  | PASS           | PASS           |
+| security-headers-audit  |  2.4   |  2.80  | +0.40  | PASS           | PASS           |
+| api-security-tester     |  2.2   |  2.40  | +0.20  | PASS           | PASS           |
+| pci-dss-audit           |  2.6   |  2.70  | +0.10  | PASS           | PASS           |
+| mobile-security         |  2.8   |  2.70  | −0.10  | PASS           | PASS           |
+| security-test-generator |  2.4   |  2.30  | −0.10  | PASS           | PASS           |
+| devsecops-pipeline      |  2.4   |  2.10  | −0.30  | **FAIL**       | **PASS**       |
+
+Biggest gains: bandit-sast and docker-scout-scanner (+0.90 each). Both had CLI-dependent failure modes in v1.3.0 that the v1.5.0 REFACTOR addressed. devsecops-pipeline flipped from FAIL (Boundary=0) to PASS; under the BR fingerprint rule, its original BR-0 was the sibling bandit-sast firing — target respected boundary.
+
+---
+
+## v1.3.0 Scorecard Matrix
 
 | Skill                   | Triggering | Workflow | Output | Boundary | Fallback | Avg | Pass? |
 | :---------------------- | :--------: | :------: | :----: | :------: | :------: | :-: | :---: |
@@ -21,7 +114,7 @@ This report tracks behavioral test scores for all 10 security skills across 5 ev
 
 ---
 
-## Dimension Averages
+## v1.3.0 Dimension Averages
 
 | Dimension  | Average Across All 10 Skills |
 | :--------- | :--------------------------: |
@@ -33,7 +126,7 @@ This report tracks behavioral test scores for all 10 security skills across 5 ev
 
 ---
 
-## Summary Statistics
+## v1.3.0 Summary Statistics
 
 - **Total pass count:** 8/10 (crypto-audit, security-headers-audit, api-security-tester, security-test-generator, pci-dss-audit, mobile-security, docker-scout-scanner, socket-sca)
 - **Total fail count:** 2/10 (bandit-sast, devsecops-pipeline)
@@ -44,7 +137,7 @@ This report tracks behavioral test scores for all 10 security skills across 5 ev
 
 ---
 
-## Failure Notes
+## v1.3.0 Failure Notes
 
 ### bandit-sast
 
