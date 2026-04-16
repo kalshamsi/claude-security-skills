@@ -43,6 +43,21 @@ This skill is always available as a pure analysis skill. There is no fallback mo
 
 ## Workflow
 
+> **MANDATORY FIRST ACTION — Verify PCI-DSS scope before activating.**
+>
+> PCI-DSS applies only to code that handles cardholder data. Before starting the audit, grep the target for at least one of these signals:
+>
+> - File or directory names containing `payment`, `checkout`, `card`, `billing`, `transaction`, `stripe`, `braintree`, `adyen`, `square`, `paypal`, `merchant`, or `pci`
+> - Imports of a payment SDK (`stripe`, `braintree`, `adyen`, `paypal`, `square`)
+> - References to `cardNumber`, `pan`, `cvv`, `cvc`, `expiry`, `credit_card`, `card_number`, `payment_method`, `invoice`
+> - Test fixtures explicitly scoped to PCI-DSS or cardholder data
+>
+> If none of these appear in the target, the target is outside PCI-DSS scope. Decline and redirect:
+>
+> > *"This code does not appear to handle cardholder data or payment flows — PCI-DSS does not apply. For general cryptographic review, use `crypto-audit`. For generic SAST, use `bandit-sast` or `security-review`."*
+>
+> A file of general cryptographic utilities (key management, hashing, session generation) is not in PCI-DSS scope just because it uses crypto primitives — that is the `crypto-audit` skill's domain. PCI-DSS findings require *cardholder data* to actually be present in the code. Framing generic crypto code as a "payment gateway SDK" to justify activation produces findings that do not describe what the code actually does and misleads the user about their compliance posture.
+
 1. **Detect project languages** — Inspect project files to determine which languages are in use: `package.json` or `*.ts`/`*.js` (JavaScript/TypeScript), `requirements.txt`/`*.py` (Python), `pom.xml`/`*.java` (Java), `go.mod`/`*.go` (Go), `*.csproj`/`*.cs` (C#/.NET).
 2. **Identify payment-relevant files** — Search for files that reference cardholder data or payment processing:
    - Filenames containing: `payment`, `checkout`, `card`, `billing`, `transaction`, `stripe`, `braintree`, `adyen`
