@@ -2,6 +2,30 @@
 
 All notable changes to claude-security-skills are documented here.
 
+## [1.5.0] — 2026-04-16
+
+### Changed
+- All 10 SKILL.md descriptions rewritten per docs/v1.4.0-cso-audit.md — triggering-conditions phrasing replaces capability-leading summaries. Rationale: v1.3.0 behavioral testing identified the capability-leading pattern as the likely cause of keyword-prompt triggering failures (bandit-sast T-1, crypto-audit T-1, docker-scout-scanner T-1). v1.5.0 Triggering avg lifted 2.0 → 3.0.
+- README now shows Triggering and Boundary dimension-average badges with real v1.5.0 numbers.
+- docs/test-methodology.md documents AI-assisted scoring protocol and the BR fingerprint attribution rule used for Boundary scoring in a non-isolated harness.
+
+### Added
+- tests/test-prompts-frozen.sh — SHA-256 hash guard that fails CI if docs/test-prompts.md drifts from the v1.4.0 tag state. Keeps the 100-prompt A/B baseline locked between releases.
+- docs/test-report.md v1.5.0 scorecard section with a v1.3.0 → v1.5.0 delta table (v1.3.0 scorecard preserved verbatim below).
+- scripts/run-behavioral-prompts.sh, scripts/score-transcripts.py, scripts/extract-test-prompts.py, scripts/summarize-test-runs.py — behavioral-test and AI-assisted scoring infrastructure. Preflight is plugin-aware (detects docker-scout as a docker plugin).
+
+### Behavioral stats (v1.3.0 → v1.5.0)
+- Triggering avg: 2.0 → 3.00 (+1.00)
+- Workflow avg: 2.9 → 2.65 (−0.25)
+- Output avg: 2.5 → 2.50 (+0.00)
+- Boundary avg: 1.3 → 2.15 (+0.85)
+- Fallback avg: 2.6 → 2.70 (+0.10)
+- Skills passing gate: 8/10 → 10/10
+- Fabrication-check failures: 1 → 0
+
+### Notes
+- REFACTOR iterations applied during Wave 3: bandit-sast (fallback-ladder discipline), docker-scout-scanner (`docker ≠ docker scout` precheck), pci-dss-audit (payment-evidence precondition before activating). Each REFACTOR committed separately and narrow-set re-scored.
+
 ## [1.4.0] — 2026-04-15
 
 ### Added
