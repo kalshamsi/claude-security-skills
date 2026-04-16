@@ -30,6 +30,13 @@ scores 0**.
 
 - Each prompt is run once per re-run (single-sample, acknowledged noise).
 - Scorer: the session operator (Khalfan), using `docs/scoring-rubric.md`.
+  v1.5.0 addendum: scoring was AI-assisted (Opus 4.6, `claude -p --bare`
+  with pinned prompt via `scripts/score-transcripts.py`). Each AI score is
+  reviewed by the operator; all priority-queue prompts (fabrication flags,
+  zeros, low-confidence, close-to-gate) are explicitly ratified and
+  appended to `docs/test-runs/v1.5.0/ai-scores-ratified.jsonl`. Non-queue
+  scores are accepted in bulk unless the spot-check (10 random
+  high-confidence prompts) shows <8/10 AI↔operator agreement.
 - Ties: if a prompt is on a 1/2 boundary, default down (conservative
   scoring). Same rule applies at 0/1, 2/3.
 - Fabrication check: if a skill claims to have run a CLI tool, verify the
@@ -39,6 +46,57 @@ scores 0**.
   CLI output from manual analysis. Flagging this class of hallucination
   requires cross-checking tool-invocation side effects (e.g., `which
   bandit` output), not just the text of the response.
+
+## BR scoring: fingerprint attribution rule (v1.5.0 clarification)
+
+The behavioral test harness (`scripts/run-behavioral-prompts.sh`) runs
+`claude -p` **without** `--bare` or skill isolation. All 10 project skills
+are discoverable at CWD; the skill-router picks the best match by
+description at runtime. For Boundary Respect (BR) prompts — which
+deliberately send a wrong-domain prompt to test whether the target skill
+declines — the response may come from a *different* skill than the one
+labeled as the test target. This was acceptable under v1.3.0 because the
+human scorer implicitly recognized which skill was responding; the AI
+scorer used in v1.5.0 does not, so the attribution step must be made
+explicit.
+
+**Fingerprint attribution rule (BR dimension only):**
+
+1. Identify the target skill's output template from its `SKILL.md` (e.g.,
+   bandit-sast produces `## Bandit SAST Scan Results`, pci-dss-audit
+   produces `## PCI-DSS v4.0 Audit Results`).
+2. Inspect the transcript response's format (heading, table shape, tool
+   version claims).
+3. Attribute the response:
+   - **Target skill's fingerprint present** → target activated → apply
+     rubric normally (wrong-domain activation = 0).
+   - **Sibling skill's fingerprint present** → target stayed out → target
+     respected BR. Score the target:
+     - **3** if the sibling that fired is the correct alternative for the
+       prompt's domain and handled it substantively well
+     - **2** if a sibling fired but not the most-correct one, or handled
+       imperfectly
+   - **Neutral decline** (response explicitly says out-of-scope + names an
+     alternative) → 2 or 3 per specificity.
+   - **Unclear / no fingerprint** → operator judgment.
+
+**Fabrication override interaction.** If a sibling fires for a BR prompt
+and fabricates CLI output (e.g., bandit-sast fires and produces Bandit
+IDs when bandit isn't installed per preflight), the prompt-level
+`fabrication_check` still fails per the methodology override. But the
+fabrication is attributable to the **sibling**, not the labeled target.
+For scorecard purposes:
+
+- Target skill's BR score reflects fingerprint attribution (can still
+  be high if target stayed out).
+- Suite-wide fabrication count increments by 1.
+- The fabrication is logged against the **sibling** for REFACTOR
+  consideration, not the target.
+
+This rule applies to BR dimension only. Triggering (T), Workflow (WA),
+Output Quality (OQ), and Fallback/Install (FI) dimensions are scored
+against the target skill's labeled prompt; if the target doesn't fire on
+a T/WA/OQ/FI prompt, that IS a dimension failure for the target.
 
 ## RED-GREEN-REFACTOR for skill edits
 
